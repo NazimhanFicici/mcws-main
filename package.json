@@ -1,12 +1,12 @@
 {
 	"name": "wsserver",
 	"private": true,
-	"version": "1.0.0",
+	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
 "dev": "npm run build && npm run dev:server",
 "dev:server": "node server/index.js",
-		"build:server": "tsc server/index.js --outDir server --module commonjs",
+		"build:server": "tsc server/index.ts --outDir server --module commonjs",
 		"build": "tsc",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
@@ -15,10 +15,11 @@
 		"format": "prettier --write .",
 		"lint": "prettier --check .",
 		"start": "node server/index.js"
-	},"engines": {
-  "node": "20.x"
-},
+	},
 	"dependencies": {
+		"@sveltejs/adapter-node": "^5.2.14",
+		"@sveltejs/kit": "^2.28.0",
+		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@tailwindcss/typography": "^0.5.15",
 		"@tailwindcss/vite": "^4.0.0",
 		"@types/express": "^4.17.21",

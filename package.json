@@ -6,14 +6,15 @@
 	"scripts": {
 		"dev": "bun run build && bun run dev:server",
 		"dev:server": "bun --watch server/index.ts",
-		"build": "svelte-kit build",
+		"build:server": "tsc server/index.ts --outDir server --module commonjs",
+		"build": "svelte-kit build && npm run build:server",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
 		"lint": "prettier --check .",
-		"start": "node build"
+		"start": "node server/index.js"
 	},
 	"dependencies": {
 		"@sveltejs/adapter-node": "^5.2.14",

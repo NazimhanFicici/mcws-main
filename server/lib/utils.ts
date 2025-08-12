@@ -1,5 +1,5 @@
 import { IncomingMessage } from 'http';
-import { logger } from './logger';
+import { logger } from './logger.js';
 import { v4 as uuidv4 } from 'uuid';
 
 export const getClientAddress = (request: IncomingMessage): string => {

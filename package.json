@@ -14,7 +14,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
 		"lint": "prettier --check .",
-		"start": "node server/index.js"
+		"start": "node dist/index.js"
 	},
 	"dependencies": {
 		"@sveltejs/adapter-node": "^5.2.14",

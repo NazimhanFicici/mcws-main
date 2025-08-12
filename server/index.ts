@@ -3,7 +3,7 @@ import { createServer } from 'http';
 import { Server as SocketIOServer, Socket as SocketIOSocket } from 'socket.io';
 import WebSocket, { WebSocketServer } from 'ws';
 import { v4 as uuidv4 } from 'uuid';
-import { handler } from '../build/handler.js';
+//import { handler } from '../build/handler.js';
 
 // Import our library modules
 import { Config } from './lib/types.js';
@@ -204,7 +204,7 @@ io.on('connection', (socket: SocketIOSocket) => {
 });
 
 // Express app
-app.use(handler);
+//app.use(handler);
 
 // Start server
 httpServer.listen(config.PORT, () => {

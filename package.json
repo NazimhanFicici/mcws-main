@@ -15,7 +15,9 @@
 		"format": "prettier --write .",
 		"lint": "prettier --check .",
 		"start": "node server/index.js"
-	},
+	},"engines": {
+  "node": "20.x"
+},
 	"dependencies": {
 		"@sveltejs/adapter-node": "^5.2.14",
 		"@sveltejs/kit": "^2.28.0",

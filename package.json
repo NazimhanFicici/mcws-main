@@ -7,7 +7,7 @@
 "dev": "npm run build && npm run dev:server",
 "dev:server": "node server/index.js",
 		"build:server": "tsc server/index.ts --outDir server --module commonjs",
-		"build": "svelte-kit build && npm run build:server",
+		"build": "npx svelte-kit build && npm run build:server",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",

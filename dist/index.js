@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { logger } from './lib/logger.js';
 import { MinecraftManager } from './lib/minecraft-manager.js';
 import { getClientAddress, createSubscriptionMessage } from './lib/utils.js';
+import { parse } from 'url';
 // Configuration
 const config = {
     PORT: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
@@ -16,6 +17,7 @@ const config = {
 const activePins = new Map();
 // Server setup
 const app = express();
+var gascId2 = 0;
 const httpServer = createServer(app);
 const io = new SocketIOServer(httpServer, {
     cors: { origin: '*', methods: ['GET', 'POST'] }
@@ -31,24 +33,37 @@ minecraftManager.setCallbacks({
 });
 // Minecraft WebSocket Server
 async function sendToXano(data) {
-  const response = await fetch("https://xav2-ouin-xo2r.f2.xano.io/api:K_1rYoDD/minecraftTest", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ inputData: data })
-  });
-
-  const result = await response.json();
-}
+    if(gascId2 !== 0) {
+  	const response = await fetch("https://xav2-ouin-xo2r.f2.xano.io/api:K_1rYoDD/minecraftTest", {
+		method: "POST",
+		headers: {
+		"Content-Type": "application/json"
+		},
+		body: JSON.stringify({ inputData: data, gascId: gascId2 })
+	});
+  	const result = await response.json();
+};
+};
 minecraftWss.on('connection', (socket, request) => {
     const clientId = uuidv4();
+const input = request;
+const rawHeaders = input.rawHeaders;
+
+// Find the index of "Host"
+const hostIndex = rawHeaders.findIndex(h => h.toLowerCase() === "host");
+if (hostIndex !== -1 && rawHeaders[hostIndex + 1]) {
+    const hostValue = rawHeaders[hostIndex + 1]; // e.g., "localhost:8080?gascId=41"
+    
+    // Parse query string
+    const urlObj = new URL("http://" + hostValue); // add scheme to make it a valid URL
+    gascId2 = urlObj.searchParams.get("gascId");
+}
     const address = getClientAddress(request);
     const port = request.socket.remotePort || 0;
     const sixDigitCode = Math.floor(100000 + Math.random() * 900000).toString();
     const uuid = uuidv4();
     const client = minecraftManager.addClient(clientId, socket, address, port);
-    logger.log(`✅ Minecraft client connected: ${clientId} from ${address}:${port}`);
+    logger.log(`✅ Minecraft${gascId2} client connected: ${clientId} from ${address}:${port}`);
     // Store the PIN
     const pinEntry = {
         clientId,
@@ -149,7 +164,7 @@ io.on('connection', (socket) => {
             logger.log(`✅ PIN ${data.pin} validated successfully for client ${pinEntry.clientId}`);
             socket.emit('pin_validation_result', {
                 success: true,
-                message: 'PIN accepted! Connection established.',
+                message: 'PIN accepted! Connectio established.',
                 clientId: pinEntry.clientId,
                 uuid: pinEntry.uuid
             });

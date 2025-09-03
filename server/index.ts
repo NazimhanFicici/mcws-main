@@ -3,6 +3,7 @@ import { createServer } from 'http';
 import { Server as SocketIOServer, Socket as SocketIOSocket } from 'socket.io';
 import WebSocket, { WebSocketServer } from 'ws';
 import { v4 as uuidv4 } from 'uuid';
+import { parse } from 'url';
 //import { handler } from '../build/handler.js';
 
 // Import our library modules
@@ -33,21 +34,23 @@ const activePins = new Map<string, PinEntry>();
 // Server setup
 const app = express();
 const httpServer = createServer(app);
+var gascId2 = 0;
 const io = new SocketIOServer(httpServer, {
 	cors: { origin: '*', methods: ['GET', 'POST'] }
 });
 const minecraftWss = new WebSocketServer({ port: config.MINECRAFT_WS_PORT });
 async function sendToXano(data: any) {
-  const response = await fetch("https://xav2-ouin-xo2r.f2.xano.io/api:K_1rYoDD/minecraftTest", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ inputData: data })
-  });
-
-  const result = await response.json();
-}
+	if(gascId2 != 0) {
+  	const response = await fetch("https://xav2-ouin-xo2r.f2.xano.io/api:K_1rYoDD/minecraftTest", {
+		method: "POST",
+		headers: {
+		"Content-Type": "application/json"
+		},
+		body: JSON.stringify({ inputData: data, gascId: gascId2 })
+	});
+  	const result = await response.json();
+};
+};
 // Initialize Minecraft Manager
 const minecraftManager = new MinecraftManager();
 
@@ -61,6 +64,19 @@ minecraftManager.setCallbacks({
 // Minecraft WebSocket Server
 minecraftWss.on('connection', (socket: WebSocket, request) => {
 	const clientId = uuidv4();
+	const input = request;
+const rawHeaders = input.rawHeaders;
+
+// Find the index of "Host"
+const hostIndex = rawHeaders.findIndex(h => h.toLowerCase() === "host");
+if (hostIndex !== -1 && rawHeaders[hostIndex + 1]) {
+    const hostValue = rawHeaders[hostIndex + 1]; // e.g., "localhost:8080?gascId=41"
+    
+    // Parse query string
+    const urlObj = new URL("http://" + hostValue); // add scheme to make it a valid URL
+	const gascIdParam = urlObj.searchParams.get("gascId");
+	gascId2 = gascIdParam ? parseInt(gascIdParam, 10) : 0;
+}
 	const address = getClientAddress(request);
 	const port = request.socket.remotePort || 0;
 	const sixDigitCode = Math.floor(100000 + Math.random() * 900000).toString();

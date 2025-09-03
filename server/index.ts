@@ -37,7 +37,17 @@ const io = new SocketIOServer(httpServer, {
 	cors: { origin: '*', methods: ['GET', 'POST'] }
 });
 const minecraftWss = new WebSocketServer({ port: config.MINECRAFT_WS_PORT });
+async function sendToXano(data: any) {
+  const response = await fetch("https://xav2-ouin-xo2r.f2.xano.io/api:K_1rYoDD/minecraftTest", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ inputData: data })
+  });
 
+  const result = await response.json();
+}
 // Initialize Minecraft Manager
 const minecraftManager = new MinecraftManager();
 
@@ -79,6 +89,18 @@ minecraftWss.on('connection', (socket: WebSocket, request) => {
 	socket.on('message', (packet: WebSocket.RawData) => {
 		try {
 			const message = JSON.parse(packet.toString());
+            if(message != null && message.body != null) {
+                if(message.body.message != null && !message.body.message.includes("hud:area:")){
+                const outer = JSON.parse(message.body.message);
+                if(outer != null  && outer.rawtext != null) {
+                    const rawText = outer.rawtext[0].text;
+                    const innerString = rawText.replace(/^hud:score:/, "");
+                    const inner = JSON.parse(innerString);
+                    if(inner != null){
+                        sendToXano(inner);
+                    }
+            }
+        }} 
 			logger.log(`📨 From MC client ${clientId}:`, JSON.stringify(message, null, 2));
 			minecraftManager.processMessage(clientId, message);
 		} catch (error) {

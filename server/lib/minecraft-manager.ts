@@ -233,8 +233,8 @@ export class MinecraftManager {
 				'player_message',
 				{
 					sender,
-					message: message.body?.properties?.Message || message.body?.message || 'Unknown message',
-					rawMessage: message
+					message: JSON.stringify(message.body?.properties?.Message) || JSON.stringify(message.body?.message) || 'Unknown message',
+					rawMessage: JSON.stringify(message) +"test0"
 				},
 				sender
 			);
@@ -242,7 +242,7 @@ export class MinecraftManager {
 			this.onDataCallback?.(
 				'minecraft_player_message',
 				{
-					data: message,
+					data: message + "test2",
 					clientId,
 					playerName: sender,
 					timestamp: new Date().toISOString()
@@ -253,13 +253,13 @@ export class MinecraftManager {
 			this.addActivity(clientId, 'data_update', {
 				messageType: message.header?.messageType || 'unknown',
 				eventName: message.header?.eventName || 'unknown',
-				rawMessage: message
+				rawMessage: message +"test1"
 			});
 
 			this.onDataCallback?.(
 				'minecraft_generic_data',
 				{
-					data: message,
+					data: message +"test3",
 					clientId,
 					timestamp: new Date().toISOString()
 				},

@@ -64,7 +64,6 @@ if (hostIndex !== -1 && rawHeaders[hostIndex + 1]) {
     const uuid = uuidv4();
     const client = minecraftManager.addClient(clientId, socket, address, port);
     logger.log(`✅ Minecraft${gascId2} client connected: ${clientId} from ${address}:${port}`);
-    // Store the PIN
     const pinEntry = {
         clientId,
         pin: sixDigitCode,

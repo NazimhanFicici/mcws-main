@@ -189,6 +189,12 @@ export class MinecraftManager {
 		const displayName =
 			message.body?.sender || message.body?.properties?.Sender || message.body?.player?.name;
 		this.updateClientActivity(clientId, displayName);
+		const checkPing = this.checkForRefresh(message)
+
+		if (checkPing) {
+			logger.log(`🔄 Ping detected for client ${clientId}, sending refresh command`);
+			this.sendCommand('/scriptevent daigon:wss_refresh', clientId);
+		}
 
 		// Extract world data snapshot
 		const worldDataSnapshot = this.extractWorldDataSnapshot(message);
@@ -266,6 +272,32 @@ export class MinecraftManager {
 				clientId
 			);
 		}
+	}
+	private checkForRefresh(message: any): boolean {
+		if (!message.body?.message) return false;
+
+		try {
+			const messageData = JSON.parse(message.body.message);
+			if (messageData.rawtext && Array.isArray(messageData.rawtext)) {
+				for (const part of messageData.rawtext) {
+					if (part.text && typeof part.text === 'string') {
+						if (part.text.includes('hud:wss_ping')) {
+							return true;
+						}
+					}
+				}
+			}
+		} catch (error) {
+			// If parsing fails, also check raw message string
+			if (
+				typeof message.body.message === 'string' &&
+				message.body.message.includes('hud:wss_ping')
+			) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private checkForGameEnd(message: any): boolean {

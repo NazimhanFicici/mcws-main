@@ -111,11 +111,13 @@ if (hostIndex !== -1 && rawHeaders[hostIndex + 1]) {
                 const outer = JSON.parse(message.body.message);
                 if(outer != null  && outer.rawtext != null) {
                     const rawText = outer.rawtext[0].text;
-                    const innerString = rawText.replace(/^hud:score:/, "");
-                    const inner = JSON.parse(innerString);
-                    if(inner != null){
-                        sendToXano(inner);
-                    }
+					if(rawText.includes("hud:score:")){
+                    	const innerString = rawText.replace(/^hud:score:/, "");
+                    	const inner = JSON.parse(innerString);
+                    	if(inner != null){
+                        	sendToXano(inner);
+                    	}
+					}
             }
         }} 
 			logger.log(`📨 From MC client ${clientId}:`, JSON.stringify(message, null, 2));

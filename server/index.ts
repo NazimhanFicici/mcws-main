@@ -30,7 +30,14 @@ interface PinEntry {
 }
 
 const activePins = new Map<string, PinEntry>();
-
+function isJSON(str: string): boolean {
+  try {
+    JSON.parse(str);
+    return true;
+  } catch {
+    return false;
+  }
+}
 // Server setup
 const app = express();
 const httpServer = createServer(app);
@@ -106,7 +113,7 @@ if (hostIndex !== -1 && rawHeaders[hostIndex + 1]) {
 	socket.on('message', (packet: WebSocket.RawData) => {
 		try {
 			const message = JSON.parse(packet.toString());
-            if(message != null && message.body != null) {
+            if(isJSON(message) && message != null && message.body != null) {
                 if(message.body.message != null && !message.body.message.includes("hud:area:")){
                 const outer = JSON.parse(message.body.message);
                 if(outer != null  && outer.rawtext != null) {

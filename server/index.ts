@@ -95,7 +95,7 @@ if (hostIndex !== -1 && rawHeaders[hostIndex + 1]) {
 	};
 	activePins.set(sixDigitCode, pinEntry);
 
-	logger.log(`📌 Generated PIN ${sixDigitCode} for client ${clientId} with UUID ${uuid}`);
+	logger.log(`📌 Generated test123  PIN ${sixDigitCode} for client ${clientId} with UUID ${uuid}`);
 
 	// Send initial commands
 	minecraftManager.sendCommand('/scriptevent daigon:webhook_connected', clientId);

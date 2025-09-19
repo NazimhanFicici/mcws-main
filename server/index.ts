@@ -101,7 +101,8 @@ if (hostIndex !== -1 && rawHeaders[hostIndex + 1]) {
 	minecraftManager.sendCommand('/scriptevent daigon:webhook_connected', clientId);
 	minecraftManager.sendCommand(`/scriptevent daigon:webhook_code ${sixDigitCode}`, clientId);
 	socket.send(createSubscriptionMessage());
-
+	minecraftManager.sendCommand("/scriptevent daigon:wss_connected", clientId)
+	
 	socket.on('message', (packet: WebSocket.RawData) => {
 		try {
 			const message = JSON.parse(packet.toString());
@@ -155,20 +156,20 @@ io.on('connection', (socket: SocketIOSocket) => {
 		connected: connectedClients.length > 0,
 		serverInfo: connectedClients[0]
 			? {
-					address: connectedClients[0].address,
-					port: connectedClients[0].port,
-					connected: true
-				}
+				address: connectedClients[0].address,
+				port: connectedClients[0].port,
+				connected: true
+			}
 			: {
-					address: 'N/A',
-					port: config.MINECRAFT_WS_PORT,
-					connected: false
-				},
+				address: 'N/A',
+				port: config.MINECRAFT_WS_PORT,
+				connected: false
+			},
 		message:
 			connectedClients.length > 0
 				? `${connectedClients.length} Minecraft client(s) connected`
 				: `No Minecraft clients connected - use /connect localhost:${config.MINECRAFT_WS_PORT} in game`
-	});
+		});
 
 	// Handle PIN validation from web clients
 	socket.on('validate_pin', (data: { pin: string }) => {
